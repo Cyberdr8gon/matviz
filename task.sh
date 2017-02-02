@@ -3,10 +3,10 @@
 PROJECT_ROOT_DIR=~/workspace/matviz
 # sanity check the build directories exist
 # cannot get cmake to put binaries here :(
-PROJECT_BIN_DIR=$PROJECT_ROOT_DIR/bin
+# PROJECT_BIN_DIR=$PROJECT_ROOT_DIR/bin
 PROJECT_RELEASE_BUILD_DIR=$PROJECT_ROOT_DIR/build/release
 PROJECT_DEBUG_BUILD_DIR=$PROJECT_ROOT_DIR/build/debug
-mkdir -p $PROJECT_BIN_DIR
+#mkdir -p $PROJECT_BIN_DIR
 mkdir -p $PROJECT_DEBUG_BUILD_DIR
 mkdir -p $PROJECT_RELEASE_BUILD_DIR
 # check if there were command line arguments
@@ -16,42 +16,52 @@ then
   echo "build debug"
   pushd $PROJECT_DEBUG_BUILD_DIR
   cmake $PROJECT_ROOT_DIR -DCMAKE_BUILD_TYPE=Debug
-  make
+  cmake --build .
   popd
 else
   # parse arguments
-  if [ "$1" == "a" ]
+  if [ "$1" == "-a" ]
   # if all build
   then
-  echo "building debug and release"
+    echo "building debug and release"
 
-  pushd $PROJECT_DEBUG_BUILD_DIR
-  cmake $PROJECT_ROOT_DIR -DCMAKE_BUILD_TYPE=Debug
-  make
-  popd
+    pushd $PROJECT_DEBUG_BUILD_DIR
+    cmake $PROJECT_ROOT_DIR -DCMAKE_BUILD_TYPE=Debug
+    cmake --build .
+    popd
 
-  pushd $PROJECT_RELEASE_BUILD_DIR
-  cmake $PROJECT_ROOT_DIR -DCMAKE_BUILD_TYPE=Release
-  make
-  popd
+    pushd $PROJECT_RELEASE_BUILD_DIR
+    cmake $PROJECT_ROOT_DIR -DCMAKE_BUILD_TYPE=Release
+    cmake --build .
+    popd
 
-  elif [ "$1" == "r" ] 
+  elif [ "$1" == "-r" ] 
   # build release only
   then
-  echo "building release"
+    echo "building release"
 
-  pushd $PROJECT_RELEASE_BUILD_DIR
-  cmake $PROJECT_ROOT_DIR -DCMAKE_BUILD_TYPE=Release
-  make
-  popd
+    pushd $PROJECT_RELEASE_BUILD_DIR
+    cmake $PROJECT_ROOT_DIR -DCMAKE_BUILD_TYPE=Release
+    cmake --build .
+    popd
+
+  elif [ "$1" == "-t" ]
+  then
+    echo "building debug and starting googletest"
+
+    pushd $PROJECT_DEBUG_BUILD_DIR
+    cmake $PROJECT_ROOT_DIR -DCMAKE_BUILD_TYPE=Debug
+    cmake --build .
+    ctest -VV
+    popd
 
   else
   # handle unknown command
-  echo "unknown command\n building debug"
+    echo "unknown command\n building debug"
 
-  pushd $PROJECT_DEBUG_BUILD_DIR
-  cmake $PROJECT_ROOT_DIR -DCMAKE_BUILD_TYPE=Debug
-  make
-  popd
+    pushd $PROJECT_DEBUG_BUILD_DIR
+    cmake $PROJECT_ROOT_DIR -DCMAKE_BUILD_TYPE=Debug
+    cmake --build .
+    popd
   fi
 fi
