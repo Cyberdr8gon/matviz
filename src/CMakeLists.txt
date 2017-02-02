@@ -1,6 +1,6 @@
-set(SOURCES main.cpp)
+set(SOURCES main.cpp matrix.cpp )
 
-# set(INCLUDES filename.file ) 
-# list(APPEND SOURCES ${INCLUDES})
+ set(INCLUDES matrix.h ) 
+ list(APPEND SOURCES ${INCLUDES})
 
 add_executable( matviz ${SOURCES} )
