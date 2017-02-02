@@ -1,6 +1,6 @@
 #!/bin/bash
 # this likely must be set for your system
-PROJECT_ROOT_DIR=~/workspace/matviz
+PROJECT_ROOT_DIR=$(dirname -- $(readlink -fn -- "$0"))
 # sanity check the build directories exist
 # cannot get cmake to put binaries here :(
 # PROJECT_BIN_DIR=$PROJECT_ROOT_DIR/bin
