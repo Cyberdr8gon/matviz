@@ -4,3 +4,4 @@ ext/
 
 *.swp
 *.un~
+.ycm_extra_conf.py
