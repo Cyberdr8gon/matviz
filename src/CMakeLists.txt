@@ -4,3 +4,4 @@ set(SOURCES main.cpp matrix.cpp )
  list(APPEND SOURCES ${INCLUDES})
 
 add_executable( matviz ${SOURCES} )
+

@@ -1,7 +1,8 @@
 #!/bin/bash
 # this likely must be set for your system
-PROJECT_ROOT_DIR=~/workspace/matrixVisualizer
+PROJECT_ROOT_DIR=~/workspace/matviz
 # sanity check the build directories exist
+# cannot get cmake to put binaries here :(
 PROJECT_BIN_DIR=$PROJECT_ROOT_DIR/bin
 PROJECT_RELEASE_BUILD_DIR=$PROJECT_ROOT_DIR/build/release
 PROJECT_DEBUG_BUILD_DIR=$PROJECT_ROOT_DIR/build/debug
