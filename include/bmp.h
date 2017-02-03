@@ -1,5 +1,6 @@
 #include <vector>
 #include <memory>
+#include <fstream>
 
 
 struct rgbColorValue{
@@ -7,11 +8,13 @@ struct rgbColorValue{
   unsigned char green = 0;
   unsigned char blue = 0;
   rgbColorValue(char red, char green, char blue);
-}
+};
 
+// class assumes bitmap passed in is top to bottom, with index 0 of vector
+// representing the top left corner of the image, drawn from left to right
 class bmp {
   public:
-    bmp(const std::shared_ptr<std::vector<rgbColorValue>> &imageVector, long width, long height);
+    bmp(std::vector<rgbColorValue> &imageVector, long width, long height);
 
     bool writeToFile(char* filename);
 
@@ -20,7 +23,7 @@ class bmp {
 
     void writeHeader();
 
-    std::shared_ptr<std::vector<rgbColorValue>> bitmapToWrite(nullptr);
+    std::vector<rgbColorValue> bitmapToWrite;
 
     // may have to use char* pointer and malloc
     std::vector<char> dataToWrite;
@@ -33,4 +36,4 @@ class bmp {
     long outputHeight;
 
   
-}
+};

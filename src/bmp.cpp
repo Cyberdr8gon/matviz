@@ -1,20 +1,46 @@
 #include "bmp.h"
 
+rgbColorValue::rgbColorValue(char red, char green, char blue) : red(red), green(green), blue(blue) {
+  
+}
 
 
-bmp::bmp(const std::shared_ptr<std::vector<rgbColorValue>> &imageVector, long width, long height) {
-  bitmapToWrite(imageVector);
+bmp::bmp(std::vector<rgbColorValue> &imageVector, long width, long height) {
+  bitmapToWrite = imageVector;
   outputHeight = height;
-  ouputWidth = width;
+  outputWidth = width;
   encodeBitmap();
 }
 
 
+// imageHeight is encoded as negitive to allow
+// top to bottom writing to file
 void bmp::encodeBitmap() {
   filesize = outputWidth * outputHeight * long(3) + long(54) + outputHeight;
-  dataToWrite(filesize);
   writeHeader();
-  // TODO continue
+
+  int sizeOfRow = outputWidth;
+  // if sizeOfRow is not multiple of 4
+  // it must be modified to be divisable by 4 with padding bytes
+  // NOTE this means sizeOfRow and outputWidth are different and
+  // should be used to know when to start writing null bytes
+  while (!(sizeOfRow % 4) ) {
+    sizeOfRow++;
+  }
+
+  long sizeOfArray = long(bitmapToWrite.size());
+
+  for(long i = 0; i < outputHeight; i++) {
+    for(long j = 0; j < sizeOfRow; j++) {
+      if(j >= outputWidth) {
+        dataToWrite.push_back(char(0));
+      } else {
+        dataToWrite.push_back(bitmapToWrite[outputWidth * i + j].red);
+        dataToWrite.push_back(bitmapToWrite[outputWidth * i + j].green);
+        dataToWrite.push_back(bitmapToWrite[outputWidth * i + j].blue);
+      }
+    }
+  }
 }
 
 void bmp::writeHeader() {
@@ -30,29 +56,27 @@ void bmp::writeHeader() {
   // write filesize little endian - 4 bytes
   // note that we must write this backwards from lowest to highest
   // bits because of how a little endian system will read the file
+  // bytes 4
   // bfSize
   
-  unsigned char temp = char(filesize);
-  dataToWrite.push_back(temp);
-  temp = char(filesize  >> 4);
-  dataToWrite.push_back(temp);
-  temp = char(filesize  >> 8);
-  dataToWrite.push_back(temp);
-  temp = char(filesize  >> 12);
-  dataToWrite.push_back(temp);
+  dataToWrite.push_back(char(filesize));
+  dataToWrite.push_back(char(filesize)  >> 4);
+  dataToWrite.push_back(char(filesize)  >> 8);
+  dataToWrite.push_back(char(filesize)  >> 12);
 
 
   // reserved 4 bytes, size 0
+  // bytes 4
   // brReserved1 and brReserved2
-  temp = 0;
-  dataToWrite.push_back(temp);
-  dataToWrite.push_back(temp);
-  dataToWrite.push_back(temp);
-  dataToWrite.push_back(temp);
+  dataToWrite.push_back(char(0));
+  dataToWrite.push_back(char(0));
+  dataToWrite.push_back(char(0));
+  dataToWrite.push_back(char(0));
 
   // offset of pixel data from start of file
   // should be roughly 54 but we should 
   // check another bitmap to make sure
+  // bytes 4
   // bfOffBits
   dataToWrite.push_back(0x36);
   dataToWrite.push_back(0);
@@ -85,13 +109,14 @@ void bmp::writeHeader() {
   dataToWrite.push_back(char(outputWidth >> 12));
 
   // height of image in pixels
+  // given in negitive to have it read from bottom to top
   // 4 bytes
   // biHeight
    
-  dataToWrite.push_back(char(outputHeight));
-  dataToWrite.push_back(char(outputHeight >> 4));
-  dataToWrite.push_back(char(outputHeight >> 8));
-  dataToWrite.push_back(char(outputHeight >> 12));
+  dataToWrite.push_back(char(-outputHeight));
+  dataToWrite.push_back(char(-outputHeight >> 4));
+  dataToWrite.push_back(char(-outputHeight >> 8));
+  dataToWrite.push_back(char(-outputHeight >> 12));
 
 
   // number of image planes in image
@@ -110,6 +135,71 @@ void bmp::writeHeader() {
   dataToWrite.push_back(char(0x18));
   dataToWrite.push_back(char(0));
 
-  // TODO start here
+  // type of compression
+  // no compression = 0
+  // 4 bytes
+  // biCompression
+  
+  dataToWrite.push_back(char(0));
+  dataToWrite.push_back(char(0));
+  dataToWrite.push_back(char(0));
+  dataToWrite.push_back(char(0));
+  
+
+  // size of image
+  // because uncompressed, there is no point
+  // in settings this as it will be calculated
+  // with previously shared information
+  // 4 bytes
+  // biSizeImage
+  
+  dataToWrite.push_back(char(0));
+  dataToWrite.push_back(char(0));
+  dataToWrite.push_back(char(0));
+  dataToWrite.push_back(char(0));
+
+  // recommended X bits per meter
+  // doesn't really matter for our purposes
+  // bytes 4
+  // biXPelsPerMeter
+
+  dataToWrite.push_back(char(0));
+  dataToWrite.push_back(char(0));
+  dataToWrite.push_back(char(0));
+  dataToWrite.push_back(char(0));
+ 
+  // recommended Y bits per meter
+  // doesn't really matter for our purposes
+  // bytes 4
+  // biXPelsPerMeter
+
+  dataToWrite.push_back(char(0));
+  dataToWrite.push_back(char(0));
+  dataToWrite.push_back(char(0));
+  dataToWrite.push_back(char(0));
+  
+  // number of color map entries actually used 
+  // 4 bytes
+  // biClrUsed
+  
+  dataToWrite.push_back(char(0));
+  dataToWrite.push_back(char(0));
+  dataToWrite.push_back(char(0));
+  dataToWrite.push_back(char(0));
+
+  // number of colors considered important in
+  // image
+  // 4 bytes
+  // biClrImportant
+  
+  dataToWrite.push_back(char(0));
+  dataToWrite.push_back(char(0));
+  dataToWrite.push_back(char(0));
+  dataToWrite.push_back(char(0));
+
+
 }
 
+bool bmp::writeToFile(char* filename) {
+  // TODO start here
+}
