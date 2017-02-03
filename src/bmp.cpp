@@ -1,14 +1,16 @@
+#include <fstream>
+#include <iostream>
+#include <cstdlib>
 #include "bmp.h"
 
-rgbColorValue::rgbColorValue(char red, char green, char blue) : red(red), green(green), blue(blue) {
-  
-}
+rgbColorValue::rgbColorValue(char red, char green, char blue)
+  : red(red), green(green), blue(blue) 
+{ }
 
 
-bmp::bmp(std::vector<rgbColorValue> &imageVector, long width, long height) {
-  bitmapToWrite = imageVector;
-  outputHeight = height;
-  outputWidth = width;
+bmp::bmp(std::vector<rgbColorValue> &imageVector, long width, long height) 
+  : outputWidth(width), outputHeight(height), bitmapToWrite(imageVector), dataToWrite()
+{
   encodeBitmap();
 }
 
@@ -27,8 +29,6 @@ void bmp::encodeBitmap() {
   while (!(sizeOfRow % 4) ) {
     sizeOfRow++;
   }
-
-  long sizeOfArray = long(bitmapToWrite.size());
 
   for(long i = 0; i < outputHeight; i++) {
     for(long j = 0; j < sizeOfRow; j++) {
@@ -200,6 +200,14 @@ void bmp::writeHeader() {
 
 }
 
-bool bmp::writeToFile(char* filename) {
-  // TODO start here
+void bmp::writeToFile(char* filename) {
+  std::fstream fileStream(filename, std::ios::out | std::ios::binary | std::ios::trunc);
+  if(!fileStream) {
+    std::cout << "Error:" << std::endl;
+    std::cout << "Could not open " << filename << " for writing." << std::endl;
+    std::exit(126);
+  }
+
+  std::copy(dataToWrite.begin(), dataToWrite.end(), std::ostreambuf_iterator<char>(fileStream));
+
 }

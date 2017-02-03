@@ -1,6 +1,5 @@
 #include <vector>
 #include <memory>
-#include <fstream>
 
 
 struct rgbColorValue{
@@ -16,7 +15,7 @@ class bmp {
   public:
     bmp(std::vector<rgbColorValue> &imageVector, long width, long height);
 
-    bool writeToFile(char* filename);
+    void writeToFile(char* filename);
 
   private:
     void encodeBitmap();
@@ -29,8 +28,6 @@ class bmp {
     std::vector<char> dataToWrite;
 
     unsigned long filesize = 0;
-
-    std::ofstream file_output;
 
     long outputWidth;
     long outputHeight;

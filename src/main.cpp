@@ -3,12 +3,11 @@
 #include <fstream>
 #include <string>
 #include <cstdlib>
+#include <memory>
 
 
 #include "matrix.h"
-// TODO incorperate google test to avoid future issues
 
-// this function is, as of yet, untested
 Matrix* fileLoader(char* filename) {
 
   std::ifstream fileHandle(filename);
