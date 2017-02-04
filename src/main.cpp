@@ -7,6 +7,7 @@
 
 
 #include "matrix.h"
+#include "bmp.h"
 
 Matrix* fileLoader(char* filename) {
 
@@ -39,9 +40,9 @@ Matrix* fileLoader(char* filename) {
 
 
 int main( int argc, char* argv[] ) {
-  if(argc <= 1) {
+  if(argc <= 2) {
     if (argv[0]) {
-      std::cout << "Usage: " << argv[0] << " <filename>" << std::endl;
+      std::cout << "Usage: " << argv[0] << " <input filename> <output filename>" << std::endl;
     } else {
       std::cout << "Usage: <program name> <filename>" << std::endl;
     }
@@ -61,6 +62,9 @@ int main( int argc, char* argv[] ) {
     exit(1);
   }
 
+ 
+//  bmp bitmap(test, 7, 10);
+//  bitmap.writeToFile(argv[2]);
 
   return 0;
 }

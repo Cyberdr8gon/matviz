@@ -9,13 +9,17 @@ PROJECT_DEBUG_BUILD_DIR=$PROJECT_ROOT_DIR/build/debug
 #mkdir -p $PROJECT_BIN_DIR
 mkdir -p $PROJECT_DEBUG_BUILD_DIR
 mkdir -p $PROJECT_RELEASE_BUILD_DIR
+
+# set flags for CMAKE
+CMAKE_DEBUG_FLAGS=-DCMAKE_CXX_CLANG_TIDY:STRING="clang-tidy;-checks=cppcoreguidelines-*,clang-analyzer-*,google-*,modernize-*,performance-*,readability-*;-fix"
+
 # check if there were command line arguments
 if [ -z "$1" ]
 then
   # no arguments, execute default behavior, build debug
   echo "build debug"
   pushd $PROJECT_DEBUG_BUILD_DIR
-  cmake $PROJECT_ROOT_DIR -DCMAKE_BUILD_TYPE=Debug
+  cmake $PROJECT_ROOT_DIR -DCMAKE_BUILD_TYPE=Debug $CMAKE_DEBUG_FLAGS
   cmake --build .
   popd
 else
@@ -26,7 +30,7 @@ else
     echo "building debug and release"
 
     pushd $PROJECT_DEBUG_BUILD_DIR
-    cmake $PROJECT_ROOT_DIR -DCMAKE_BUILD_TYPE=Debug
+    cmake $PROJECT_ROOT_DIR -DCMAKE_BUILD_TYPE=Debug $CMAKE_DEBUG_FLAGS
     cmake --build .
     popd
 
@@ -50,7 +54,7 @@ else
     echo "building debug and starting googletest"
 
     pushd $PROJECT_DEBUG_BUILD_DIR
-    cmake $PROJECT_ROOT_DIR -DCMAKE_BUILD_TYPE=Debug
+    cmake $PROJECT_ROOT_DIR -DCMAKE_BUILD_TYPE=Debug $CMAKE_DEBUG_FLAGS
     cmake --build .
     ctest -VV
     popd

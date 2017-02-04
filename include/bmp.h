@@ -6,7 +6,7 @@ struct rgbColorValue{
   unsigned char red = 0;
   unsigned char green = 0;
   unsigned char blue = 0;
-  rgbColorValue(char red, char green, char blue);
+  rgbColorValue(unsigned char red, unsigned char green, unsigned char blue);
 };
 
 // class assumes bitmap passed in is top to bottom, with index 0 of vector

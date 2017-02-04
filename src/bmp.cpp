@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include "bmp.h"
 
-rgbColorValue::rgbColorValue(char red, char green, char blue)
+rgbColorValue::rgbColorValue(unsigned char red, unsigned char green, unsigned char blue)
   : red(red), green(green), blue(blue) 
 { }
 
@@ -18,29 +18,38 @@ bmp::bmp(std::vector<rgbColorValue> &imageVector, long width, long height)
 // imageHeight is encoded as negitive to allow
 // top to bottom writing to file
 void bmp::encodeBitmap() {
-  filesize = outputWidth * outputHeight * long(3) + long(54) + outputHeight;
   writeHeader();
 
-  int sizeOfRow = outputWidth;
   // if sizeOfRow is not multiple of 4
   // it must be modified to be divisable by 4 with padding bytes
   // NOTE this means sizeOfRow and outputWidth are different and
   // should be used to know when to start writing null bytes
-  while (!(sizeOfRow % 4) ) {
-    sizeOfRow++;
-  }
+  //
+
+  int padding = ( 4 - ( ( outputWidth * 3  ) % 4  )  ) % 4;
+
+  int scanLineRow = outputWidth + padding;
+
+  filesize = scanLineRow * outputHeight * long(3) + long(54);
+
+  dataToWrite[2] = char(filesize);
+  dataToWrite[3] = char(filesize >> 4);
+  dataToWrite[4] = char(filesize >> 8);
+  dataToWrite[5] = char(filesize >> 12);
 
   for(long i = 0; i < outputHeight; i++) {
-    for(long j = 0; j < sizeOfRow; j++) {
+    for(long j = 0; j < scanLineRow; j++) {
       if(j >= outputWidth) {
         dataToWrite.push_back(char(0));
       } else {
-        dataToWrite.push_back(bitmapToWrite[outputWidth * i + j].red);
-        dataToWrite.push_back(bitmapToWrite[outputWidth * i + j].green);
         dataToWrite.push_back(bitmapToWrite[outputWidth * i + j].blue);
+        dataToWrite.push_back(bitmapToWrite[outputWidth * i + j].green);
+        dataToWrite.push_back(bitmapToWrite[outputWidth * i + j].red);
       }
     }
   }
+
+
 }
 
 void bmp::writeHeader() {
@@ -59,10 +68,15 @@ void bmp::writeHeader() {
   // bytes 4
   // bfSize
   
-  dataToWrite.push_back(char(filesize));
-  dataToWrite.push_back(char(filesize)  >> 4);
-  dataToWrite.push_back(char(filesize)  >> 8);
-  dataToWrite.push_back(char(filesize)  >> 12);
+  // do this at end
+  
+//  dataToWrite.push_back(char(filesize));
+//  dataToWrite.push_back(char(filesize)  >> 4);
+//  dataToWrite.push_back(char(filesize)  >> 8);
+//  dataToWrite.push_back(char(filesize)  >> 12);
+    dataToWrite.push_back(char(0));
+    dataToWrite.push_back(char(0)); dataToWrite.push_back(char(0));
+    dataToWrite.push_back(char(0));
 
 
   // reserved 4 bytes, size 0
@@ -208,6 +222,11 @@ void bmp::writeToFile(char* filename) {
     std::exit(126);
   }
 
-  std::copy(dataToWrite.begin(), dataToWrite.end(), std::ostreambuf_iterator<char>(fileStream));
+  //std::copy(dataToWrite.begin(), dataToWrite.end(), std::ostreambuf_iterator<char>(fileStream));
+  for(long i = 0; i < dataToWrite.size(); i++) {
+    fileStream << dataToWrite[i];
+  }
+
+  fileStream.close();
 
 }

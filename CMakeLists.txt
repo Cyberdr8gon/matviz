@@ -1,4 +1,4 @@
-cmake_minimum_required( VERSION 2.8.8 )
+cmake_minimum_required( VERSION 3.5 )
 set( PROJECT_NAME_STR matviz )
 project( ${PROJECT_NAME_STR} C CXX)
 
@@ -41,6 +41,15 @@ add_executable( ${PROJECT_NAME_STR} ${SRC_FILES} )
 #
 # Test
 #
+
+# need VERSION 3.6 cmake :(
+# clang-tidy static analyzer
+
+#if( CMAKE_CXX_CLANG_TIDY )
+#  set_property( TARGET ${PROJECT_NAME_STR} PROPERTY CMAKE_CXX_CLANG_TIDY )
+#endif()
+
+# gtest
 
 # add module source
 
