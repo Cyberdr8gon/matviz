@@ -1,3 +1,4 @@
+#pragma once
 #include <vector>
 #include <memory>
 
@@ -13,7 +14,7 @@ struct rgbColorValue{
 // representing the top left corner of the image, drawn from left to right
 class bmp {
   public:
-    bmp(std::vector<rgbColorValue> &imageVector, long width, long height);
+    bmp(std::shared_ptr<std::vector<rgbColorValue>> imageVector, long width, long height);
 
     void writeToFile(char* filename);
 
@@ -22,7 +23,7 @@ class bmp {
 
     void writeHeader();
 
-    std::vector<rgbColorValue> bitmapToWrite;
+    std::shared_ptr<std::vector<rgbColorValue>> bitmapToWrite;
 
     // may have to use char* pointer and malloc
     std::vector<char> dataToWrite;

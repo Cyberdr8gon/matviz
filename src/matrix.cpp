@@ -13,12 +13,12 @@ Matrix::Matrix(unsigned int columns) {
   numberOfColumns = columns;
 }
 
-double Matrix::getValue(unsigned int column, unsigned int row) {
+double Matrix::getValue(unsigned int column, unsigned int row) const {
   return matrixData[numberOfColumns * row + column];
 }
 
 
-bool Matrix::validCoordinates(unsigned int column, unsigned int row) {
+bool Matrix::validCoordinates(unsigned int column, unsigned int row) const {
   return (numberOfColumns * row + column) <= (matrixData.size()) && (column < numberOfColumns);
 }
 
@@ -35,10 +35,10 @@ bool Matrix::setValue(unsigned int column, unsigned int row, double value) {
 }
 
 
-void Matrix::printMatrix() {
+void Matrix::printMatrix() const {
   std::cout << "Debug matrix print:" << std::endl;
-  for(int j = 0; j < matrixData.size() / numberOfColumns; j++ ) {
-    for(int i = 0; i < numberOfColumns; i++) {
+  for(unsigned int j = 0; j < matrixData.size() / numberOfColumns; j++ ) {
+    for(unsigned int i = 0; i < numberOfColumns; i++) {
       // loop through and print matrix
       std::cout << getValue(i, j) << ", " ;
 
@@ -50,6 +50,14 @@ void Matrix::printMatrix() {
 }
 
 
-bool Matrix::matrixIsValid() {
+bool Matrix::matrixIsValid() const {
   return !(matrixData.size() % numberOfColumns);
+}
+
+unsigned int Matrix::getNumberOfColumns() const {
+  return numberOfColumns;
+}
+
+unsigned int Matrix::getNumberOfRows() const {
+  return matrixData.size() / numberOfColumns;
 }

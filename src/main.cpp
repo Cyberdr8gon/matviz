@@ -8,6 +8,13 @@
 
 #include "matrix.h"
 #include "bmp.h"
+#include "renderMethods.h"
+
+namespace CONSTANTS {
+  const unsigned int DEFAULTIMAGEWIDTH = 700;
+  const unsigned int DEFAULTIMAGEHEIGHT = 700;
+}
+
 
 Matrix* fileLoader(char* filename) {
 
@@ -62,9 +69,18 @@ int main( int argc, char* argv[] ) {
     exit(1);
   }
 
+
+  unsigned int imageWidth = matrix->getNumberOfColumns() * 30;
+  unsigned int imageHeight= matrix->getNumberOfRows() * 30;
+
+
+  // TODO should extend here for more methods
+  auto renderedBitMap = greyscaleSpyPlot(matrix, imageWidth, imageHeight);
+
+  bmp bitmapData(renderedBitMap, imageWidth, imageHeight);
  
 //  bmp bitmap(test, 7, 10);
-//  bitmap.writeToFile(argv[2]);
+  bitmapData.writeToFile(argv[2]);
 
   return 0;
 }

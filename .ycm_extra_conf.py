@@ -42,7 +42,8 @@ flags = [
     '-I/tmp/tmpJPcIec/ext/gtest/src/googletest/googlemock/include',
     '-I/tmp/tmpJPcIec/ext/gtest/src/googletest/googletest',
     '-I/tmp/tmpJPcIec/ext/gtest/src/googletest/googletest/include',
-    '-isystem /usr/include'
+    '-isystem /usr/include',
+    '-std=c++14'
 ]
 
 

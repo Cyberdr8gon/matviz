@@ -30,22 +30,28 @@ class Matrix {
     // TODO overload this to simplify loading from args, pipes and files
     Matrix(unsigned int columns);
 
-    double getValue(unsigned int column, unsigned int row);
-
+    // getters and setters
+    double getValue(unsigned int column, unsigned int row) const;
     // returns true if successful
     bool setValue(unsigned int column, unsigned int row, double value);
 
+    unsigned int getNumberOfColumns() const;
+
+    unsigned int getNumberOfRows() const;
+
+
     void fastPushValue(double value);
 
-    void printMatrix(); 
+    void printMatrix() const; 
+
 
     // checks if the data is rectangular/square
     // and therefor valid for matrix operations
     // if it is, returns true
-    bool matrixIsValid();
+    bool matrixIsValid() const;
   private:
     // returns true if coordinates are valid
-    bool validCoordinates(unsigned int column, unsigned int row);
+    bool validCoordinates(unsigned int column, unsigned int row) const;
     unsigned int numberOfColumns;
 
     // this is a 1d array being used to represent a matrix

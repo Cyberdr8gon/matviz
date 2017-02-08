@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <cstdlib>
+#include <memory>
 #include "bmp.h"
 
 rgbColorValue::rgbColorValue(unsigned char red, unsigned char green, unsigned char blue)
@@ -8,7 +9,7 @@ rgbColorValue::rgbColorValue(unsigned char red, unsigned char green, unsigned ch
 { }
 
 
-bmp::bmp(std::vector<rgbColorValue> &imageVector, long width, long height) 
+bmp::bmp(std::shared_ptr<std::vector<rgbColorValue>>  imageVector, long width, long height) 
   : outputWidth(width), outputHeight(height), bitmapToWrite(imageVector), dataToWrite()
 {
   encodeBitmap();
@@ -33,18 +34,18 @@ void bmp::encodeBitmap() {
   filesize = scanLineRow * outputHeight * long(3) + long(54);
 
   dataToWrite[2] = char(filesize);
-  dataToWrite[3] = char(filesize >> 4);
-  dataToWrite[4] = char(filesize >> 8);
-  dataToWrite[5] = char(filesize >> 12);
+  dataToWrite[3] = char(filesize >> 8);
+  dataToWrite[4] = char(filesize >> 16);
+  dataToWrite[5] = char(filesize >> 24);
 
   for(long i = 0; i < outputHeight; i++) {
     for(long j = 0; j < scanLineRow; j++) {
       if(j >= outputWidth) {
         dataToWrite.push_back(char(0));
       } else {
-        dataToWrite.push_back(bitmapToWrite[outputWidth * i + j].blue);
-        dataToWrite.push_back(bitmapToWrite[outputWidth * i + j].green);
-        dataToWrite.push_back(bitmapToWrite[outputWidth * i + j].red);
+        dataToWrite.push_back((*bitmapToWrite)[outputWidth * i + j].blue);
+        dataToWrite.push_back((*bitmapToWrite)[outputWidth * i + j].green);
+        dataToWrite.push_back((*bitmapToWrite)[outputWidth * i + j].red);
       }
     }
   }
@@ -75,7 +76,8 @@ void bmp::writeHeader() {
 //  dataToWrite.push_back(char(filesize)  >> 8);
 //  dataToWrite.push_back(char(filesize)  >> 12);
     dataToWrite.push_back(char(0));
-    dataToWrite.push_back(char(0)); dataToWrite.push_back(char(0));
+    dataToWrite.push_back(char(0)); 
+    dataToWrite.push_back(char(0));
     dataToWrite.push_back(char(0));
 
 
@@ -112,25 +114,26 @@ void bmp::writeHeader() {
   dataToWrite.push_back(0);
   dataToWrite.push_back(0);
 
+  // these bytes here are being miswritten
 
   // width of image in pixels
   // 4 bytes
   // biWidth
   
-  dataToWrite.push_back(char(outputWidth));
-  dataToWrite.push_back(char(outputWidth >> 4));
-  dataToWrite.push_back(char(outputWidth >> 8));
-  dataToWrite.push_back(char(outputWidth >> 12));
+  dataToWrite.push_back((unsigned char) outputWidth);
+  dataToWrite.push_back((unsigned char)(outputWidth >> 8));
+  dataToWrite.push_back((unsigned char)(outputWidth >> 16));
+  dataToWrite.push_back((unsigned char)(outputWidth >> 24));
 
   // height of image in pixels
   // given in negitive to have it read from bottom to top
   // 4 bytes
   // biHeight
    
-  dataToWrite.push_back(char(-outputHeight));
-  dataToWrite.push_back(char(-outputHeight >> 4));
-  dataToWrite.push_back(char(-outputHeight >> 8));
-  dataToWrite.push_back(char(-outputHeight >> 12));
+  dataToWrite.push_back((unsigned char)(-outputHeight));
+  dataToWrite.push_back((unsigned char)(-outputHeight >> 8));
+  dataToWrite.push_back((unsigned char)(-outputHeight >> 16));
+  dataToWrite.push_back((unsigned char)(-outputHeight >> 24));
 
 
   // number of image planes in image
