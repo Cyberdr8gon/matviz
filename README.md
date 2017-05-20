@@ -16,3 +16,5 @@ and it should automate the build process for you.
 Unfortunately, we don't install into bin directories yet, so you will have to move the executable yourself out of the build folder.
 Also, it is a eventual goal to support building without building the testing directories as well.
 I am sure there is a cmake command line flag for this but I haven't looked into it yet.
+
+This project isn't being actively developed right now :(
